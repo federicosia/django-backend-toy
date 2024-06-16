@@ -1,7 +1,7 @@
 from ninja.errors import ValidationError
 from ninja import NinjaAPI
 
-api = NinjaAPI()
+api = NinjaAPI(title="IT-Shopper", description="Backend documentation", version="0.1")
 
 
 @api.exception_handler(ValidationError)
