@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from .models import UserInput, UserOutput
+from .models import Response, UserInput, LoginInput
 from django.http.request import HttpRequest
 from django.contrib.auth import authenticate, login, logout
 from ninja import Router
@@ -7,36 +7,34 @@ from ninja import Router
 api = Router()
 
 
-@api.post("/login")
-def login_user(request: HttpRequest):
-    username = request.POST.get("username")
-    password = request.POST.get("password")
-    user = authenticate(request, username=username, password=password)
+@api.post("/login", response={202: Response, 406: Response})
+def login_user(request: HttpRequest, data: LoginInput):
+    user = authenticate(request, username=data.username, password=data.password)
     if user is not None:
         login(request, user)
-        return f"Authenticated user {request.user}"
+        return 202, Response(message="User logged in")
     else:
-        return {"code": 500, "description": "NOT auth"}
+        return 406, Response(
+            message="User not logged in", errors="User does not exists"
+        )
 
 
-@api.post("/logout")
+@api.post("/logout", response={202: Response})
 def logout_user(request: HttpRequest):
     logout(request)
-    return "user logged out"
+    return 202, Response(message="User logged out")
 
 
-@api.post("/register", response=UserOutput)
-def register_user(request, user: UserInput):
-    params: set = {"name", "surname", "username", "email", "password"}
-    if params.issubset(request.POST):
-        user = User.objects.create_user(
-            name=user.name,
-            surname=user.surname,
-            username=user.username,
-            email=user.email,
-            password=user.password,
+@api.post("/register", response={202: Response, 406: Response})
+def register_user(request, data: UserInput):
+    if not User.objects.filter(username=data.username):
+        User.objects.create_user(
+            first_name=data.first_name,
+            last_name=data.last_name,
+            username=data.username,
+            email=data.email,
+            password=data.password,
         )
-        return UserOutput(status_code=202, description="user created")
+        return 202, Response(message="user created")
     else:
-        print(f"{params} - {request.POST}")
-        return {}
+        return 406, Response(message="user already registered")

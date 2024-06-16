@@ -1,15 +1,21 @@
+from typing import Optional
+
 from ninja import Schema
 
 
+class LoginInput(Schema):
+    username: str
+    password: str
+
+
 class UserInput(Schema):
-    name: str
-    surname: str
+    first_name: str
+    last_name: str
     username: str
     email: str
     password: str
 
 
-class UserOutput(Schema):
-    status_code: int
-    description: str
-    email: str
+class Response(Schema):
+    message: str
+    errors: Optional[str] = None
