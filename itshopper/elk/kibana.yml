@@ -1,0 +1,3 @@
+server.name: kibana-itshopper
+server.host: localhost
+elasticsearch.hosts: [ http://elastic-itshopper:9200 ]
