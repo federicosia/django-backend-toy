@@ -50,6 +50,8 @@ class LogStashLogSender:
                 + " - "
                 + record.levelname
                 + " - "
+                + record.funcName
+                + " - "
                 + record.msg,
                 "utf-8",
             ),
