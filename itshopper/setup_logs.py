@@ -28,6 +28,8 @@ def setup_logging(default_level=logging.INFO):
 
 class LogstashDatagramHandler(logging.Handler):
     def __init__(self, **kwargs):
+        if not kwargs.get("host") or not kwargs.get("port"):
+            raise Exception("Host and port are mandatory parameters")
         super().__init__()
         self.sender = LogStashLogSender(kwargs.get("host"), kwargs.get("port"))
 
@@ -42,7 +44,6 @@ class LogStashLogSender:
         self.port = port
 
     def writeLog(self, record: logging.LogRecord):
-        print(f"send log to {self.host}:{self.port}")
         self.UDPsocket.sendto(
             bytes(
                 datetime.now().replace(microsecond=0).isoformat()
