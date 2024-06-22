@@ -34,7 +34,7 @@ def logout_user(request: HttpRequest):
 
 
 @api.post("/register", response={202: Response, 406: Response})
-def register_user(request, data: UserInput):
+def register_user(request: HttpRequest, data: UserInput):
     logger_console.info(f"Registering an user {data}")
     if not User.objects.filter(username=data.username):
         User.objects.create_user(
