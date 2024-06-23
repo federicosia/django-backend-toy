@@ -21,14 +21,34 @@ class UserTest(TestCase):
     def test_user_success_logout_as_user_logged_before(self):
         request_registration = self.factory.post("/user/register")
         registration_status_code: tuple = register_user(request_registration, self.register_body)[0]
-        self.assertIs(registration_status_code, 202)
+        self.assertEqual(registration_status_code, 202)
 
         request_login = self.factory.post("/user/login")
         setattr(request_login, "session", self.client.session)
         login_status_code: tuple = login_user(request_login, self.login_body)[0]
-        self.assertIs(login_status_code, 202)
+        self.assertEqual(login_status_code, 202)
 
         request_logout = self.factory.post("/user/logout")
         setattr(request_logout, "session", self.client.session)
         logout_status_code: tuple = logout_user(request_logout)[0]
-        self.assertIs(logout_status_code, 202)
+        self.assertEqual(logout_status_code, 202)
+
+    def test_user_registration_failed_cause_already_exists(self):
+        request_registration = self.factory.post("/user/register")
+        registration_status_code: tuple = register_user(request_registration, self.register_body)[0]
+        self.assertEqual(registration_status_code, 202)
+
+        # repeat
+        request_registration = self.factory.post("/user/register")
+        registration_status_code: tuple = register_user(request_registration, self.register_body)[0]
+        self.assertEqual(registration_status_code, 406)
+
+    def test_user_login_success(self):
+        request_registration = self.factory.post("/user/register")
+        registration_status_code: tuple = register_user(request_registration, self.register_body)[0]
+        self.assertEqual(registration_status_code, 202)
+
+        request_login = self.factory.post("/user/login")
+        setattr(request_login, "session", self.client.session)
+        login_status_code: tuple = login_user(request_login, self.login_body)[0]
+        self.assertEqual(login_status_code, 202)
