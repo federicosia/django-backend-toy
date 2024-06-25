@@ -1,0 +1,32 @@
+services:
+  elastic-itshopper:
+    image: elastic-itshopper:latest
+    mem_reservation: 1GB
+    ports:
+      - 9200:9200
+    networks:
+      - elk-network
+  logstash-itshopper:
+    image: logstash-itshopper:latest
+    ports:
+      - 5044:5044
+      - 5069:5069/udp
+    networks:
+      - elk-network
+  kibana-itshopper:
+    image: kibana-itshopper:latest
+    ports:
+      - 5601:5601
+    networks:
+      - elk-network
+  postgres-itshopper:
+    image: postgres:latest
+    ports:
+      - 5466:5432
+    environment:
+      - POSTGRES_DB=itshopper
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+networks:
+  elk-network:
+    driver: bridge
