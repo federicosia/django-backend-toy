@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from .models import Response, UserInput, LoginInput
+from .schemas import Response, UserInput, LoginInput
 from django.http.request import HttpRequest
 from django.contrib.auth import authenticate, login, logout
 from setup_logs import setup_logging

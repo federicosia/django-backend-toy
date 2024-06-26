@@ -1,6 +1,6 @@
 from django.test import TestCase, RequestFactory
 from .views import register_user, login_user, logout_user
-from .models import UserInput, LoginInput
+from .schemas import UserInput, LoginInput
 
 
 # Create your tests here.
