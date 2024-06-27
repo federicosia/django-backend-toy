@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from .repositories.users import UserRepository
 from .schemas import Response, UserInput, LoginInput
 from django.http.request import HttpRequest
 from django.contrib.auth import authenticate, login, logout
@@ -40,8 +40,8 @@ def logout_user(request: HttpRequest):
 def register_user(request: HttpRequest, data: UserInput):
     logger_console.info(f"Registering an user {data}")
     logger_logstash.info(f"Registering an user {data}")
-    if not User.objects.filter(username=data.username):
-        User.objects.create_user(
+    if not UserRepository.filter(username=data.username):
+        UserRepository.create(
             first_name=data.first_name,
             last_name=data.last_name,
             username=data.username,

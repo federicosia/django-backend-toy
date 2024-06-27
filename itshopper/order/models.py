@@ -1,9 +1,17 @@
+from django.contrib.auth.models import User
 from django.db import models
 
 
 # Create your models here.
 class Order(models.Model):
-    OrderGenre = {"IT": "information technology", "EL": "electronics", "TM": "temp"}
+    price = models.FloatField(default=0)
+    items = models.IntegerField(default=1)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+
+
+class Item(models.Model):
+    type_genres = {"IT": "information technology", "EL": "electronics", "TM": "temp"}
     name = models.CharField(max_length=30)
-    genre = models.CharField(max_length=30, choices=OrderGenre, default="TM")
-    price = models.FloatField(default=1000)
+    description = models.CharField(max_length=250)
+    genre = models.CharField(max_length=30, choices=type_genres, default="TM")
+    price = models.FloatField(default=0)
