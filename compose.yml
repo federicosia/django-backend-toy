@@ -27,6 +27,10 @@ services:
       - POSTGRES_DB=itshopper
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+  redis-itshopper:
+    image: redis:latest
+    ports:
+      - 6379:6379
 networks:
   elk-network:
     driver: bridge
