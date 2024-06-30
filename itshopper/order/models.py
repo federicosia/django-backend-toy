@@ -2,11 +2,9 @@ from django.contrib.auth.models import User
 from django.db import models
 
 
-# Create your models here.
-class Order(models.Model):
-    price = models.FloatField(default=0)
-    items = models.IntegerField(default=1)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+class Cart(models.Model):
+    is_snapshot = models.BooleanField(default=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
 class Item(models.Model):
@@ -15,3 +13,11 @@ class Item(models.Model):
     description = models.CharField(max_length=250)
     genre = models.CharField(max_length=30, choices=type_genres, default="TM")
     price = models.FloatField(default=0)
+    sold = models.BooleanField(default=False)
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, null=True)
+
+
+# Create your models here.
+class Order(models.Model):
+    cart_snapshot = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)

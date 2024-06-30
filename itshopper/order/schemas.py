@@ -4,6 +4,10 @@ from ninja import Schema, ModelSchema
 from order.models import Item
 
 
+class AddItemInput(Schema):
+    ids: List[int]
+
+
 class CreateOrderInput(Schema):
     ids: List[int]
 
