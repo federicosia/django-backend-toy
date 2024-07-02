@@ -6,8 +6,9 @@ from setup_logs import setup_logging
 from ninja import Router
 
 api = Router(tags=["user module"])
-logger_console = setup_logging().getLogger("console")
-logger_logstash = setup_logging().getLogger("logstash")
+log_setup = setup_logging()
+logger_console = log_setup.getLogger("console")
+logger_logstash = log_setup.getLogger("logstash")
 
 
 @api.post("/login", response={202: Response, 406: Response})

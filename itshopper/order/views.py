@@ -10,8 +10,9 @@ from .logics import OrderLogic, BadRequest, ItemLogic
 from .schemas import Response, AddItemInput
 
 api = Router(tags=["order module"], auth=django_auth)
-logger_console = setup_logging().getLogger("console")
-logger_logstash = setup_logging().getLogger("logstash")
+log_setup = setup_logging()
+logger_console = log_setup.getLogger("console")
+logger_logstash = log_setup.getLogger("logstash")
 
 
 # Create your views here.
