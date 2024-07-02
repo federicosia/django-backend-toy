@@ -42,3 +42,7 @@ class ItemLogic:
             return True
         else:
             raise BadRequest
+
+    @staticmethod
+    def search_for_items(item_string: str):
+        return list(ItemRepository.contains_field_substring(item_string).values())

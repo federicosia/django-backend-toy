@@ -1,3 +1,5 @@
+import json
+
 from django.contrib.auth.models import User
 from django.http import HttpRequest
 from ninja import Router
@@ -46,3 +48,14 @@ def add_item_in_cart(request: HttpRequest, data: AddItemInput):
         return 400, Response(
             message="Order not made", errors="items with passed ids not present"
         )
+
+
+@api.get("/item/search", response={202: Response})
+def search_item(request: HttpRequest, search_string: str):
+    user: User = getattr(request, "user", None)
+    logger_console.info(f"user {user} requested a research for {search_string}")
+    logger_logstash.info(f"user {user} requested a research for {search_string}")
+    result: list = ItemLogic.search_for_items(search_string)
+    logger_console.info(f"items found {len(result)}")
+    logger_logstash.info(f"items found {len(result)}")
+    return 202, Response(message="Item added", body=json.dumps(result))

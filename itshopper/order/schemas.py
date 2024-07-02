@@ -20,4 +20,5 @@ class CreateItemInput(ModelSchema):
 
 class Response(Schema):
     message: str
+    body: str = None
     errors: Optional[str] = None

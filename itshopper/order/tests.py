@@ -1,10 +1,11 @@
+import json
 from enum import StrEnum
 
 from django.contrib.auth.models import User
 from django.test import TestCase, RequestFactory
 
 from .repositories.carts import CartRepository
-from .views import create_order, add_item_in_cart
+from .views import create_order, add_item_in_cart, search_item
 from .schemas import AddItemInput
 from .repositories.items import ItemRepository
 
@@ -105,3 +106,26 @@ class ItemTest(TestCase):
             request_add_item, self.add_item_body
         )[0]
         self.assertEqual(add_item_status_code, 202)
+
+    def test_search_for_item(self):
+        response_body_expected: list = [
+            {
+                "id": 5,
+                "name": "item2",
+                "description": "descr2",
+                "genre": "IT",
+                "price": 9.2,
+                "sold": False,
+                "cart_id": None,
+            }
+        ]
+        self.client.login(username="testuser", password="testpassword")
+        request_search_item = self.factory.get("/item/search")
+        setattr(request_search_item, "user", self.user)
+        search_item_response: tuple = search_item(request_search_item, "item2")
+        self.assertEqual(search_item_response[0], 202)
+        search_item_body_response = json.loads(search_item_response[1].body)
+        self.assertEqual(
+            len(search_item_body_response[0]), len(response_body_expected[0])
+        )
+        self.assertEqual(search_item_body_response[0], response_body_expected[0])
