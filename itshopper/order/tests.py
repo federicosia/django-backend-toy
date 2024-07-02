@@ -4,6 +4,7 @@ from enum import StrEnum
 from django.contrib.auth.models import User
 from django.test import TestCase, RequestFactory
 
+from .models import Cart, Item
 from .repositories.carts import CartRepository
 from .views import create_order, add_item_in_cart, search_item
 from .schemas import AddItemInput
@@ -25,46 +26,49 @@ class OrderTest(TestCase):
             username="testuser", password="testpassword"
         )
 
-        self.cart_order_success = CartRepository.create(user=self.user)
+        self.cart_order_success: Cart = CartRepository.create(user=self.user)
 
         # create fake items
-        ItemRepository.create(
+        self.item1: Item = ItemRepository.create(
             name="item1",
             description="descr1",
             genre=ItemGenres.ORDER_GENRES_IT,
             price=12.2,
-            cart=self.cart_order_success,
         )
-        ItemRepository.create(
+        self.item2: Item = ItemRepository.create(
             name="item2",
             description="descr2",
             genre=ItemGenres.ORDER_GENRES_IT,
             price=9.2,
-            cart=self.cart_order_success,
         )
-        ItemRepository.create(
+        self.item3: Item = ItemRepository.create(
             name="item3",
             description="descr3",
             genre=ItemGenres.ORDER_GENRES_IT,
             price=7.2,
-            cart=self.cart_order_success,
         )
 
     def test_create_order_made_successfully(self):
         self.client.login(username="testuser", password="testpassword")
         request_order = self.factory.post("/order/create")
         setattr(request_order, "user", self.user)
+        CartRepository.add_items(
+            self.cart_order_success, self.item1, self.item2, self.item3
+        )
         create_order_status_code: tuple = create_order(request_order)[0]
         self.assertEqual(create_order_status_code, 202)
-        self.assertEqual(
-            len(ItemRepository.filter(cart=self.cart_order_success, sold=False)), 0
-        )
+        self.assertTrue(CartRepository.get(pk=self.cart_order_success.pk).is_snapshot)
+        for item in CartRepository.get_items(self.cart_order_success):
+            self.assertTrue(item.sold)
 
     def test_create_order_made_unsuccessfully(self):
         self.client.login(username="testuser", password="testpassword")
         request_order = self.factory.post("/order/create")
         setattr(request_order, "user", self.user)
-        ItemRepository.filter(cart=self.cart_order_success).delete()
+        CartRepository.add_items(
+            self.cart_order_success, self.item1, self.item2, self.item3
+        )
+        ItemRepository.update(self.item1, sold=True)
         create_order_status_code: tuple = create_order(request_order)[0]
         self.assertEqual(create_order_status_code, 400)
 
@@ -85,7 +89,7 @@ class ItemTest(TestCase):
             genre=ItemGenres.ORDER_GENRES_IT,
             price=12.2,
         )
-        ItemRepository.create(
+        self.item_to_search = ItemRepository.create(
             name="item2",
             description="descr2",
             genre=ItemGenres.ORDER_GENRES_IT,
@@ -116,7 +120,6 @@ class ItemTest(TestCase):
                 "genre": "IT",
                 "price": 9.2,
                 "sold": False,
-                "cart_id": None,
             }
         ]
         self.client.login(username="testuser", password="testpassword")

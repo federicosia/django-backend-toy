@@ -2,11 +2,6 @@ from django.contrib.auth.models import User
 from django.db import models
 
 
-class Cart(models.Model):
-    is_snapshot = models.BooleanField(default=False)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-
 class Item(models.Model):
     type_genres = {"IT": "information technology", "EL": "electronics", "TM": "temp"}
     name = models.CharField(max_length=30)
@@ -14,7 +9,12 @@ class Item(models.Model):
     genre = models.CharField(max_length=30, choices=type_genres, default="TM")
     price = models.FloatField(default=0)
     sold = models.BooleanField(default=False)
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, null=True)
+
+
+class Cart(models.Model):
+    is_snapshot = models.BooleanField(default=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    items = models.ManyToManyField(Item)
 
 
 # Create your models here.
