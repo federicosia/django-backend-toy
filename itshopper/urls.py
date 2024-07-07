@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import path
 from order.views import api as order_api
 from user.views import api as user_api
-from exceptions import api
+from .exceptions import api
 
 
 api.add_router("user/", user_api)
