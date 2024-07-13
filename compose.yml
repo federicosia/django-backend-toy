@@ -39,8 +39,6 @@ services:
       - POSTGRES_DB=itshopper
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-    volumes:
-      - ./dbdata:/var/lib/postgresql/data
     networks:
       - elk-network
   redis-itshopper:

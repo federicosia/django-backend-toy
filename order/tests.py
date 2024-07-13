@@ -1,4 +1,3 @@
-import json
 from enum import StrEnum
 
 from django.contrib.auth.models import User
@@ -6,8 +5,9 @@ from django.test import TestCase, RequestFactory
 
 from .models import Cart, Item
 from .repositories.carts import CartRepository
+from .schemas.order_schema import CreateOrderInput
 from .views import create_order, add_item_in_cart, search_item
-from .schemas import AddItemInput
+from .schemas.item_schema import AddItemInput
 from .repositories.items import ItemRepository
 
 
@@ -127,7 +127,7 @@ class ItemTest(TestCase):
         setattr(request_search_item, "user", self.user)
         search_item_response: tuple = search_item(request_search_item, "item2")
         self.assertEqual(search_item_response[0], 202)
-        search_item_body_response = json.loads(search_item_response[1].body)
+        search_item_body_response: list = search_item_response[1]
         self.assertEqual(
             len(search_item_body_response[0]), len(response_body_expected[0])
         )

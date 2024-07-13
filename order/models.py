@@ -17,7 +17,6 @@ class Cart(models.Model):
     items = models.ManyToManyField(Item)
 
 
-# Create your models here.
 class Order(models.Model):
     cart_snapshot = models.ForeignKey(Cart, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
