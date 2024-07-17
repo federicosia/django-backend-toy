@@ -3,12 +3,11 @@ from enum import StrEnum
 from django.contrib.auth.models import User
 from django.test import TestCase, RequestFactory
 
-from .models import Cart, Item
-from .repositories.carts import CartRepository
-from .schemas.order_schema import CreateOrderInput
-from .views import create_order, add_item_in_cart, search_item
-from .schemas.item_schema import AddItemInput
-from .repositories.items import ItemRepository
+from order.models import Cart, Item
+from order.repositories.carts import CartRepository
+from order.views import create_order, add_item_in_cart, search_item
+from order.schemas.item_schema import AddItemInput
+from order.repositories.items import ItemRepository
 
 
 class ItemGenres(StrEnum):

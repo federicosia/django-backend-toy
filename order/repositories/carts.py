@@ -7,11 +7,8 @@ class CartRepository(BaseRepository):
 
     @classmethod
     def add_items(cls, user_cart: Cart, *items):
-        try:
-            for item in items:
-                user_cart.items.add(item)
-        except TypeError:
-            return None
+        for item in items:
+            user_cart.items.add(item)
 
     @classmethod
     def get_items(cls, user_cart: Cart):
