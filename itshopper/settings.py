@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+import os
 from pathlib import Path
 from dotenv import load_dotenv, find_dotenv
 
@@ -96,7 +97,7 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "itshopper",
-        "HOST": "postgres-itshopper",
+        "HOST": os.getenv("postgres-itshopper", "localhost"),
         "PORT": "5432",
         "USER": "postgres",
         "PASSWORD": "postgres",

@@ -42,18 +42,27 @@ class LogStashLogSender:
         self.UDPsocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.host = host
         self.port = port
+        self.first_error = 0
 
     def writeLog(self, record: logging.LogRecord):
-        self.UDPsocket.sendto(
-            bytes(
-                datetime.now().replace(microsecond=0).isoformat()
-                + " - "
-                + record.levelname
-                + " - "
-                + record.funcName
-                + " - "
-                + record.msg,
-                "utf-8",
-            ),
-            (self.host, self.port),
-        )
+        try:
+            self.UDPsocket.sendto(
+                bytes(
+                    datetime.now().replace(microsecond=0).isoformat()
+                    + " - "
+                    + record.levelname
+                    + " - "
+                    + record.funcName
+                    + " - "
+                    + record.msg,
+                    "utf-8",
+                ),
+                (self.host, self.port),
+            )
+        except Exception as e:
+            if self.first_error == 0:
+                print(
+                    f"Missing {self.host}:{self.port} to send UDP packages -> {e}. "
+                    f"\nN.B: if running in a CI/CD it is normal..."
+                )
+                self.first_error += 1
