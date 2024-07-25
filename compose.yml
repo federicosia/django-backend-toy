@@ -23,6 +23,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    environment:
+      - postgres-itshopper=postgres-itshopper
     ports:
       - "8000:8000"
     volumes:

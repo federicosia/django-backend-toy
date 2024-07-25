@@ -21,10 +21,10 @@ class AddItemInCart(Command):
                 user=self.user, is_snapshot=False
             ).first()
             if user_cart:
-                CartRepository.add_items(user_cart, items)
+                CartRepository.add_items(user_cart, *items)
             else:
                 user_cart: Cart = CartRepository.create(user=self.user)
-                CartRepository.add_items(user_cart, items)
+                CartRepository.add_items(user_cart, *items)
             return user_cart
         else:
             raise BadRequest
